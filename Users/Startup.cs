@@ -38,17 +38,25 @@ namespace Users
                     policy.RequireRole("Users");
                     policy.RequireClaim(ClaimTypes.StateOrProvince, "DC");
                 });
-                opts.AddPolicy("NotBob", policy => {
+                opts.AddPolicy("NotBob", policy =>
+                {
                     policy.RequireAuthenticatedUser();
                     policy.AddRequirements(new BlockUsersRequirement("Bob"));
                 });
-                opts.AddPolicy("AuthorsAndEditors", policy => {
+                opts.AddPolicy("AuthorsAndEditors", policy =>
+                {
                     policy.AddRequirements(new DocumentAuthorizationRequirement
                     {
                         AllowAuthors = true,
                         AllowEditors = true
                     });
                 });
+            });
+
+            services.AddAuthentication().AddGoogle(opts =>
+            {
+                opts.ClientId = "<enter client id here>";
+                opts.ClientSecret = "<enter client secret here>";
             });
 
             services.AddDbContext<AppIdentityDbContext>(options =>

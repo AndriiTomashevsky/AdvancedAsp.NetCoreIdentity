@@ -31,6 +31,12 @@ namespace Users.Controllers
             return View("Index", GetData(nameof(OtherAction)));
         }
 
+        [Authorize(Policy = "NotBob")]
+        public IActionResult NotBob()
+        {
+            return View("Index", GetData(nameof(NotBob)));
+        }
+
         private Dictionary<string, object> GetData(string actionName)
         {
             return new Dictionary<string, object>

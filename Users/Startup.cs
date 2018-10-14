@@ -8,6 +8,7 @@ using Users.Infrastructure;
 using SportsStore.Models;
 using Microsoft.AspNetCore.Authentication;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Users
 {
@@ -27,6 +28,7 @@ namespace Users
             services.AddTransient<IUserValidator<AppUser>,
                 CustomUserValidator>();
             services.AddSingleton<IClaimsTransformation, LocationClaimsProvider>();
+            services.AddTransient<IAuthorizationHandler, BlockUsersHandler>();
 
             services.AddAuthorization(opts =>
             {
@@ -34,6 +36,10 @@ namespace Users
                 {
                     policy.RequireRole("Users");
                     policy.RequireClaim(ClaimTypes.StateOrProvince, "DC");
+                });
+                opts.AddPolicy("NotBob", policy => {
+                    policy.RequireAuthenticatedUser();
+                    policy.AddRequirements(new BlockUsersRequirement("Bob"));
                 });
             });
 

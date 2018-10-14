@@ -29,6 +29,7 @@ namespace Users
                 CustomUserValidator>();
             services.AddSingleton<IClaimsTransformation, LocationClaimsProvider>();
             services.AddTransient<IAuthorizationHandler, BlockUsersHandler>();
+            services.AddTransient<IAuthorizationHandler, DocumentAuthorizationHandler>();
 
             services.AddAuthorization(opts =>
             {
@@ -40,6 +41,13 @@ namespace Users
                 opts.AddPolicy("NotBob", policy => {
                     policy.RequireAuthenticatedUser();
                     policy.AddRequirements(new BlockUsersRequirement("Bob"));
+                });
+                opts.AddPolicy("AuthorsAndEditors", policy => {
+                    policy.AddRequirements(new DocumentAuthorizationRequirement
+                    {
+                        AllowAuthors = true,
+                        AllowEditors = true
+                    });
                 });
             });
 

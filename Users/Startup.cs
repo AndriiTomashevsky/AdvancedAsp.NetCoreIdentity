@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Users.Models;
 using Users.Infrastructure;
 using SportsStore.Models;
+using Microsoft.AspNetCore.Authentication;
 
 namespace Users
 {
@@ -24,6 +25,7 @@ namespace Users
                 CustomPasswordValidator>();
             services.AddTransient<IUserValidator<AppUser>,
                 CustomUserValidator>();
+            services.AddSingleton<IClaimsTransformation, LocationClaimsProvider>();
 
             services.AddDbContext<AppIdentityDbContext>(options =>
                 options.UseSqlServer(
